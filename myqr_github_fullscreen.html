@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login QR Mikrotik</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      color: white;
+      font-family: sans-serif;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-weight: normal;
+      font-size: 1.4rem;
+    }
+  </style>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <h2>Scan QR Login Hotspot</h2>
+  <div id="qr-reader"></div>
+
+  <script>
+    const mikrotikLoginUrl = "http://10.10.2.1/login";
+
+    const qrScanner = new Html5Qrcode("qr-reader");
+    qrScanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      (text) => {
+        let redirectUrl = "";
+
+        if (text.startsWith("http://") || text.startsWith("https://")) {
+          redirectUrl = text;
+        } else if (text.includes(":")) {
+          const [username, password] = text.split(":");
+          redirectUrl = mikrotikLoginUrl + "?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password);
+        }
+
+        if (redirectUrl) {
+          qrScanner.stop().then(() => {
+            window.location.href = redirectUrl;
+          });
+        }
+      },
+      (err) => {
+        // Optional console.warn
+      }
+    ).catch((err) => {
+      alert("Kamera tidak bisa dibuka: " + err);
+    });
+  </script>
+</body>
+</html>
