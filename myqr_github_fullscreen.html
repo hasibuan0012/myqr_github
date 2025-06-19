@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login QR Hotspot</title>
+  <title>QR Debug Scanner</title>
   <style>
     html, body {
       margin: 0;
@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
-  <h2>Scan QR Login Hotspot</h2>
+  <h2>Scan QR (Debug Mode)</h2>
   <div id="qr-reader"></div>
 
   <script>
@@ -41,16 +41,21 @@
       { facingMode: "environment" },
       { fps: 10, qrbox: 250 },
       (text) => {
+        console.log("✅ QR Terdeteksi:", text);
+        alert("QR Terdeteksi: " + text);
+
         const username = text.trim();
-        const password = username; // password = username
+        const password = username;
         const redirectUrl = mikrotikLoginUrl + "?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password);
         qrScanner.stop().then(() => {
           window.location.href = redirectUrl;
         });
       },
-      (err) => {}
+      (err) => {
+        console.warn("🔄 Scan error:", err);
+      }
     ).catch((err) => {
-      alert("Gagal membuka kamera: " + err);
+      alert("❌ Gagal membuka kamera: " + err);
     });
   </script>
 </body>
