@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login QR Mikrotik</title>
+  <title>Login QR Hotspot</title>
   <style>
     html, body {
       margin: 0;
@@ -28,7 +27,7 @@
       font-size: 1.4rem;
     }
   </style>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
   <h2>Scan QR Login Hotspot</h2>
@@ -42,26 +41,16 @@
       { facingMode: "environment" },
       { fps: 10, qrbox: 250 },
       (text) => {
-        let redirectUrl = "";
-
-        if (text.startsWith("http://") || text.startsWith("https://")) {
-          redirectUrl = text;
-        } else if (text.includes(":")) {
-          const [username, password] = text.split(":");
-          redirectUrl = mikrotikLoginUrl + "?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password);
-        }
-
-        if (redirectUrl) {
-          qrScanner.stop().then(() => {
-            window.location.href = redirectUrl;
-          });
-        }
+        const username = text.trim();
+        const password = username; // password = username
+        const redirectUrl = mikrotikLoginUrl + "?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password);
+        qrScanner.stop().then(() => {
+          window.location.href = redirectUrl;
+        });
       },
-      (err) => {
-        // Optional console.warn
-      }
+      (err) => {}
     ).catch((err) => {
-      alert("Kamera tidak bisa dibuka: " + err);
+      alert("Gagal membuka kamera: " + err);
     });
   </script>
 </body>
